@@ -277,6 +277,47 @@ print(df.index.max())
     2020-07-27 01:00:00
     
 
+
+```python
+df_missing_values_count = df.isnull().sum()
+df_missing_values_count[df_missing_values_count > 0]
+```
+
+
+
+
+    LATENCIA_MS             48
+    PORCENTAJE_PACK_LOSS    49
+    INBOUND_BITS            47
+    OUTBOUND_BITS           47
+    dtype: int64
+
+
+
+
+```python
+df_notnull = df[pd.notnull(df['PORCENTAJE_PACK_LOSS'])]
+print('LATENCIA_MS ', df_notnull.LATENCIA_MS.isnull().sum())
+print('PORCENTAJE_PACK_LOSS ', df_notnull.PORCENTAJE_PACK_LOSS.isnull().sum())
+print('OUTBOUND_BITS ', df_notnull.OUTBOUND_BITS.isnull().sum())
+print('INBOUND_BITS ', df_notnull.INBOUND_BITS.isnull().sum())
+
+df_notnull.shape
+```
+
+    LATENCIA_MS  0
+    PORCENTAJE_PACK_LOSS  0
+    OUTBOUND_BITS  0
+    INBOUND_BITS  0
+    
+
+
+
+
+    (61499, 11)
+
+
+
 ---
 
 ## **Basic Time Series Forecasting**
@@ -289,24 +330,234 @@ Vamos a hacer forecasting sobre la variable `INBOUND_BITS` de dicho punto de med
 
 
 ```python
-df = df.loc['2020-07-01 00:00:00':]
-```
-
-
-```python
-df = df[df.PUNTO_MEDICION == 'BAZ - Yocsina']
-```
-
-
-```python
-df_new = df[['INBOUND_BITS']]
-
-print(df_new.shape)
+df_new = df
 df_new
 ```
 
-    (313, 1)
-    
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID_EQUIPO</th>
+      <th>PUNTO_MEDICION</th>
+      <th>CAPACIDAD_MAXIMA_GBS</th>
+      <th>FECHA_INICIO_MEDICION</th>
+      <th>FECHA_FIN_MEDICION</th>
+      <th>PASO</th>
+      <th>LATENCIA_MS</th>
+      <th>PORCENTAJE_PACK_LOSS</th>
+      <th>INBOUND_BITS</th>
+      <th>OUTBOUND_BITS</th>
+      <th>MEDIDA</th>
+    </tr>
+    <tr>
+      <th>FECHA_HORA</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2020-05-01 03:00:00</th>
+      <td>25</td>
+      <td>ABA - Abasto Cliente</td>
+      <td>1.0</td>
+      <td>2020-05-01 01:00:00.000</td>
+      <td>2020-05-28 13:00:00.000</td>
+      <td>7200</td>
+      <td>0.636025</td>
+      <td>0.000000</td>
+      <td>2.574323e+06</td>
+      <td>5.511033e+06</td>
+      <td>MB</td>
+    </tr>
+    <tr>
+      <th>2020-05-01 05:00:00</th>
+      <td>25</td>
+      <td>ABA - Abasto Cliente</td>
+      <td>1.0</td>
+      <td>2020-05-01 01:00:00.000</td>
+      <td>2020-05-28 13:00:00.000</td>
+      <td>7200</td>
+      <td>0.604169</td>
+      <td>0.000000</td>
+      <td>2.890153e+06</td>
+      <td>4.081183e+06</td>
+      <td>MB</td>
+    </tr>
+    <tr>
+      <th>2020-05-01 07:00:00</th>
+      <td>25</td>
+      <td>ABA - Abasto Cliente</td>
+      <td>1.0</td>
+      <td>2020-05-01 00:59:59.995</td>
+      <td>2020-05-28 12:59:59.995</td>
+      <td>7200</td>
+      <td>0.630580</td>
+      <td>0.000000</td>
+      <td>2.152505e+06</td>
+      <td>4.904134e+06</td>
+      <td>MB</td>
+    </tr>
+    <tr>
+      <th>2020-05-01 09:00:00</th>
+      <td>25</td>
+      <td>ABA - Abasto Cliente</td>
+      <td>1.0</td>
+      <td>2020-05-01 00:59:59.995</td>
+      <td>2020-05-28 12:59:59.995</td>
+      <td>7200</td>
+      <td>0.643044</td>
+      <td>0.000000</td>
+      <td>6.436357e+06</td>
+      <td>1.015017e+07</td>
+      <td>MB</td>
+    </tr>
+    <tr>
+      <th>2020-05-01 11:00:00</th>
+      <td>25</td>
+      <td>ABA - Abasto Cliente</td>
+      <td>1.0</td>
+      <td>2020-05-01 00:59:59.995</td>
+      <td>2020-05-28 12:59:59.995</td>
+      <td>7200</td>
+      <td>0.620542</td>
+      <td>0.000000</td>
+      <td>3.173940e+06</td>
+      <td>4.403766e+06</td>
+      <td>MB</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 17:00:00</th>
+      <td>23</td>
+      <td>Yocsina - Mogote</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>3.562319</td>
+      <td>0.047782</td>
+      <td>2.508895e+08</td>
+      <td>3.668142e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 19:00:00</th>
+      <td>23</td>
+      <td>Yocsina - Mogote</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>2.354296</td>
+      <td>0.000000</td>
+      <td>2.538119e+08</td>
+      <td>3.656848e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 21:00:00</th>
+      <td>23</td>
+      <td>Yocsina - Mogote</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>2.490059</td>
+      <td>0.047672</td>
+      <td>2.605628e+08</td>
+      <td>4.817544e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 23:00:00</th>
+      <td>23</td>
+      <td>Yocsina - Mogote</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>2.050153</td>
+      <td>0.175618</td>
+      <td>2.605467e+08</td>
+      <td>5.252063e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-27 01:00:00</th>
+      <td>23</td>
+      <td>Yocsina - Mogote</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>2.237503</td>
+      <td>0.154984</td>
+      <td>2.602927e+08</td>
+      <td>4.971771e+08</td>
+      <td>GB</td>
+    </tr>
+  </tbody>
+</table>
+<p>61548 rows × 11 columns</p>
+</div>
+
+
+
+
+```python
+df_new = df_new.loc['2020-07-01 00:00:00':]
+```
+
+
+```python
+df_new = df_new[df_new.PUNTO_MEDICION == 'BAZ - Yocsina']
+```
+
+
+```python
+df_new[['INBOUND_BITS', 'OUTBOUND_BITS']]
+```
 
 
 
@@ -330,9 +581,11 @@ df_new
     <tr style="text-align: right;">
       <th></th>
       <th>INBOUND_BITS</th>
+      <th>OUTBOUND_BITS</th>
     </tr>
     <tr>
       <th>FECHA_HORA</th>
+      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -340,65 +593,293 @@ df_new
     <tr>
       <th>2020-07-01 01:00:00</th>
       <td>6.664197e+09</td>
+      <td>5.572259e+08</td>
     </tr>
     <tr>
       <th>2020-07-01 03:00:00</th>
       <td>4.090509e+09</td>
+      <td>4.402316e+08</td>
     </tr>
     <tr>
       <th>2020-07-01 05:00:00</th>
       <td>2.192750e+09</td>
+      <td>4.032365e+08</td>
     </tr>
     <tr>
       <th>2020-07-01 07:00:00</th>
       <td>1.424331e+09</td>
+      <td>3.640696e+08</td>
     </tr>
     <tr>
       <th>2020-07-01 09:00:00</th>
       <td>1.861970e+09</td>
+      <td>3.625410e+08</td>
     </tr>
     <tr>
       <th>...</th>
+      <td>...</td>
       <td>...</td>
     </tr>
     <tr>
       <th>2020-07-26 17:00:00</th>
       <td>4.849683e+09</td>
+      <td>4.814886e+08</td>
     </tr>
     <tr>
       <th>2020-07-26 19:00:00</th>
       <td>5.238562e+09</td>
+      <td>5.072193e+08</td>
     </tr>
     <tr>
       <th>2020-07-26 21:00:00</th>
       <td>6.657298e+09</td>
+      <td>5.900252e+08</td>
     </tr>
     <tr>
       <th>2020-07-26 23:00:00</th>
       <td>7.150991e+09</td>
+      <td>6.023718e+08</td>
     </tr>
     <tr>
       <th>2020-07-27 01:00:00</th>
       <td>6.873960e+09</td>
+      <td>5.649422e+08</td>
     </tr>
   </tbody>
 </table>
-<p>313 rows × 1 columns</p>
+<p>313 rows × 2 columns</p>
 </div>
 
 
 
 
 ```python
-df_new.index = df_new.index.to_period(freq='H')
+df_new.index = df_new.index.to_period(freq='2H')
+
+df_new
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID_EQUIPO</th>
+      <th>PUNTO_MEDICION</th>
+      <th>CAPACIDAD_MAXIMA_GBS</th>
+      <th>FECHA_INICIO_MEDICION</th>
+      <th>FECHA_FIN_MEDICION</th>
+      <th>PASO</th>
+      <th>LATENCIA_MS</th>
+      <th>PORCENTAJE_PACK_LOSS</th>
+      <th>INBOUND_BITS</th>
+      <th>OUTBOUND_BITS</th>
+      <th>MEDIDA</th>
+    </tr>
+    <tr>
+      <th>FECHA_HORA</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2020-07-01 01:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.307286</td>
+      <td>0.0</td>
+      <td>6.664197e+09</td>
+      <td>5.572259e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-01 03:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.556555</td>
+      <td>0.0</td>
+      <td>4.090509e+09</td>
+      <td>4.402316e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-01 05:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.391266</td>
+      <td>0.0</td>
+      <td>2.192750e+09</td>
+      <td>4.032365e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-01 07:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.398869</td>
+      <td>0.0</td>
+      <td>1.424331e+09</td>
+      <td>3.640696e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-01 09:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.477172</td>
+      <td>0.0</td>
+      <td>1.861970e+09</td>
+      <td>3.625410e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 17:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.531825</td>
+      <td>0.0</td>
+      <td>4.849683e+09</td>
+      <td>4.814886e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 19:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.488627</td>
+      <td>0.0</td>
+      <td>5.238562e+09</td>
+      <td>5.072193e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 21:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>3.057433</td>
+      <td>0.0</td>
+      <td>6.657298e+09</td>
+      <td>5.900252e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-26 23:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.362077</td>
+      <td>0.0</td>
+      <td>7.150991e+09</td>
+      <td>6.023718e+08</td>
+      <td>GB</td>
+    </tr>
+    <tr>
+      <th>2020-07-27 01:00</th>
+      <td>23</td>
+      <td>BAZ - Yocsina</td>
+      <td>10.0</td>
+      <td>2020-06-22 00:59:59.995</td>
+      <td>2020-07-27 00:59:59.995</td>
+      <td>7200</td>
+      <td>1.288512</td>
+      <td>0.0</td>
+      <td>6.873960e+09</td>
+      <td>5.649422e+08</td>
+      <td>GB</td>
+    </tr>
+  </tbody>
+</table>
+<p>313 rows × 11 columns</p>
+</div>
+
+
+
+
+```python
+
 ```
 
 Para el modelado de series de tiempo univariadas, es mejor trabajar con un Pandas Series en lugar de un Dataframe
 
 
 ```python
-y = df_new['INBOUND_BITS']
-y
+inb = df_new['INBOUND_BITS']
+inb
 ```
 
 
@@ -416,7 +897,32 @@ y
     2020-07-26 21:00    6.657298e+09
     2020-07-26 23:00    7.150991e+09
     2020-07-27 01:00    6.873960e+09
-    Freq: H, Name: INBOUND_BITS, Length: 313, dtype: float64
+    Freq: 2H, Name: INBOUND_BITS, Length: 313, dtype: float64
+
+
+
+
+```python
+out = df_new['OUTBOUND_BITS']
+out
+```
+
+
+
+
+    FECHA_HORA
+    2020-07-01 01:00    5.572259e+08
+    2020-07-01 03:00    4.402316e+08
+    2020-07-01 05:00    4.032365e+08
+    2020-07-01 07:00    3.640696e+08
+    2020-07-01 09:00    3.625410e+08
+                            ...     
+    2020-07-26 17:00    4.814886e+08
+    2020-07-26 19:00    5.072193e+08
+    2020-07-26 21:00    5.900252e+08
+    2020-07-26 23:00    6.023718e+08
+    2020-07-27 01:00    5.649422e+08
+    Freq: 2H, Name: OUTBOUND_BITS, Length: 313, dtype: float64
 
 
 
@@ -426,7 +932,7 @@ Plotear el grafico de la serie de tiempo.
 
 
 ```python
-y.index.values[0].to_timestamp()
+inb.index.values[0].to_timestamp()
 ```
 
 
@@ -438,7 +944,7 @@ y.index.values[0].to_timestamp()
 
 
 ```python
-y.tail()
+inb.tail()
 ```
 
 
@@ -450,38 +956,98 @@ y.tail()
     2020-07-26 21:00    6.657298e+09
     2020-07-26 23:00    7.150991e+09
     2020-07-27 01:00    6.873960e+09
-    Freq: H, Name: INBOUND_BITS, dtype: float64
+    Freq: 2H, Name: INBOUND_BITS, dtype: float64
 
 
 
 
 ```python
 j=[]
-for x in y.index.values:
+for x in inb.index.values:
     j.append(x.to_timestamp())
     
 ```
 
 
 ```python
-y_mean = y.rolling(window = 30).mean()
+inb_mean = inb.rolling(window = 30).mean()
 ```
 
 
 ```python
-plt.plot(j,y.values)
-y_mean.plot()
+plt.plot(j,inb.values)
+inb_mean.plot()
 ```
 
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x14418b57448>
+    <matplotlib.axes._subplots.AxesSubplot at 0x29775e91d08>
 
 
 
 
-![png](output_21_1.png)
+![png](output_26_1.png)
+
+
+
+```python
+out.index.values[0].to_timestamp()
+```
+
+
+
+
+    Timestamp('2020-07-01 01:00:00')
+
+
+
+
+```python
+out.tail()
+```
+
+
+
+
+    FECHA_HORA
+    2020-07-26 17:00    4.814886e+08
+    2020-07-26 19:00    5.072193e+08
+    2020-07-26 21:00    5.900252e+08
+    2020-07-26 23:00    6.023718e+08
+    2020-07-27 01:00    5.649422e+08
+    Freq: 2H, Name: OUTBOUND_BITS, dtype: float64
+
+
+
+
+```python
+k=[]
+for x in out.index.values:
+    k.append(x.to_timestamp())
+    
+```
+
+
+```python
+out_mean = out.rolling(window = 30).mean()
+```
+
+
+```python
+plt.plot(k,out.values)
+out_mean.plot()
+```
+
+
+
+
+    <matplotlib.axes._subplots.AxesSubplot at 0x29775d326c8>
+
+
+
+
+![png](output_31_1.png)
 
 
 #### **Random Walk**
@@ -526,21 +1092,123 @@ def utils_generate_rw(y0, n, sigma, ymin=None, ymax=None):
 
 
 ```python
-y.describe()
+df_new.describe()
 ```
 
 
 
 
-    count    3.130000e+02
-    mean     4.262534e+09
-    std      1.895935e+09
-    min      1.150010e+09
-    25%      2.581562e+09
-    50%      4.445862e+09
-    75%      5.889731e+09
-    max      7.225044e+09
-    Name: INBOUND_BITS, dtype: float64
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID_EQUIPO</th>
+      <th>CAPACIDAD_MAXIMA_GBS</th>
+      <th>PASO</th>
+      <th>LATENCIA_MS</th>
+      <th>PORCENTAJE_PACK_LOSS</th>
+      <th>INBOUND_BITS</th>
+      <th>OUTBOUND_BITS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>313.0</td>
+      <td>313.0</td>
+      <td>313.0</td>
+      <td>313.000000</td>
+      <td>313.0</td>
+      <td>3.130000e+02</td>
+      <td>3.130000e+02</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>23.0</td>
+      <td>10.0</td>
+      <td>7200.0</td>
+      <td>1.442290</td>
+      <td>0.0</td>
+      <td>4.262534e+09</td>
+      <td>4.951616e+08</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.201500</td>
+      <td>0.0</td>
+      <td>1.895935e+09</td>
+      <td>8.196138e+07</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>23.0</td>
+      <td>10.0</td>
+      <td>7200.0</td>
+      <td>1.250074</td>
+      <td>0.0</td>
+      <td>1.150010e+09</td>
+      <td>2.994874e+08</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>23.0</td>
+      <td>10.0</td>
+      <td>7200.0</td>
+      <td>1.323175</td>
+      <td>0.0</td>
+      <td>2.581562e+09</td>
+      <td>4.289538e+08</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>23.0</td>
+      <td>10.0</td>
+      <td>7200.0</td>
+      <td>1.428770</td>
+      <td>0.0</td>
+      <td>4.445862e+09</td>
+      <td>5.009358e+08</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>23.0</td>
+      <td>10.0</td>
+      <td>7200.0</td>
+      <td>1.516664</td>
+      <td>0.0</td>
+      <td>5.889731e+09</td>
+      <td>5.697582e+08</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>23.0</td>
+      <td>10.0</td>
+      <td>7200.0</td>
+      <td>3.546131</td>
+      <td>0.0</td>
+      <td>7.225044e+09</td>
+      <td>6.315361e+08</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
 
 
@@ -556,12 +1224,12 @@ plt.plot(rw)
 
 
 
-    [<matplotlib.lines.Line2D at 0x1441ac5fe48>]
+    [<matplotlib.lines.Line2D at 0x29775c957c8>]
 
 
 
 
-![png](output_26_1.png)
+![png](output_36_1.png)
 
 
 
@@ -574,12 +1242,12 @@ plt.plot(rw)
 
 
 
-    [<matplotlib.lines.Line2D at 0x1441acdab08>]
+    [<matplotlib.lines.Line2D at 0x297780cd908>]
 
 
 
 
-![png](output_27_1.png)
+![png](output_37_1.png)
 
 
 
@@ -592,12 +1260,12 @@ plt.plot(rw)
 
 
 
-    [<matplotlib.lines.Line2D at 0x1441ac90bc8>]
+    [<matplotlib.lines.Line2D at 0x2977878cac8>]
 
 
 
 
-![png](output_28_1.png)
+![png](output_38_1.png)
 
 
 
@@ -654,7 +1322,7 @@ ts_train, ts_test = split_train_test(y, test=0.2)
     
 
 
-![png](output_31_1.png)
+![png](output_41_1.png)
 
 
 
@@ -668,7 +1336,7 @@ plt.show()
 ```
 
 
-![png](output_32_0.png)
+![png](output_42_0.png)
 
 
 
@@ -777,26 +1445,22 @@ preds = simulate_rw(ts_train, ts_test)
 ```
 
 
-![png](output_35_0.png)
+![png](output_45_0.png)
 
 
-    Training --> Residuals mean: 90490590.0  | std: 2501613427.0
-    Test --> Error mean: -813530331.0  | std: 2212487344.0  | mae: 1837373199.0  | mape: 73.0 %  | mse: 5.479231843963629e+18  | rmse: 2340775906.0
+    Training --> Residuals mean: 8418740.0  | std: 2276569703.0
+    Test --> Error mean: 821752419.0  | std: 2519431141.0  | mae: 2232079846.0  | mape: 67.0 %  | mse: 6.922055816988514e+18  | rmse: 2630980011.0
     
 
 
 ```python
-resid= ts_train-ts_train.shift(1)
-sigma = resid.std()
-round(sigma, 3)
+
 ```
 
 
+```python
 
-
-    1199470332.299
-
-
+```
 
 
 ```python
@@ -842,7 +1506,7 @@ y.head()
     2020-07-01 05:00    2.192750e+09
     2020-07-01 07:00    1.424331e+09
     2020-07-01 09:00    1.861970e+09
-    Freq: H, Name: INBOUND_BITS, dtype: float64
+    Freq: 2H, Name: INBOUND_BITS, dtype: float64
 
 
 
@@ -873,15 +1537,17 @@ plt.plot(data)
 
 
 
-    [<matplotlib.lines.Line2D at 0x1441bba3dc8>]
+    [<matplotlib.lines.Line2D at 0x29778eff3c8>]
 
 
 
 
-![png](output_44_1.png)
+![png](output_55_1.png)
 
 
 Asi el modelo aprende cual es el comportamiento promedio de dicho ciclo.
+
+En el siguiente modelo, se pasa otra variable a las predicciones, en este caso OUTBOUT_BITS, para que lo utilize a la hora de predecir el comportamiento del nuevo ciclo. Esto es util ya que predice con mucha mayor presicion, pero a su vez no se si es tan util para nuestro proyecto de mentoria, ya que no vamos a tener disponibles mediciones de otras variables para los momentos futuros a predecir.
 
 
 ```python
@@ -900,11 +1566,11 @@ z.head()
 
 
     FECHA_HORA
-    2020-07-01 01:00:00    5.572259e+08
-    2020-07-01 03:00:00    4.402316e+08
-    2020-07-01 05:00:00    4.032365e+08
-    2020-07-01 07:00:00    3.640696e+08
-    2020-07-01 09:00:00    3.625410e+08
+    2020-05-01 03:00:00    5.511033e+06
+    2020-05-01 05:00:00    4.081183e+06
+    2020-05-01 07:00:00    4.904134e+06
+    2020-05-01 09:00:00    1.015017e+07
+    2020-05-01 11:00:00    4.403766e+06
     Name: OUTBOUND_BITS, dtype: float64
 
 
@@ -967,58 +1633,20 @@ ax2.legend()
 
 
 
-    <matplotlib.legend.Legend at 0x1441c94b808>
+    <matplotlib.legend.Legend at 0x297793c8348>
 
 
 
 
-![png](output_54_1.png)
+![png](output_66_1.png)
 
 
 Se puede apreciar como utilizando una segunda variable como referencia (variable exogena), se logran buenos resultados.
 
 
 ```python
-# HWES (Holt Winter’s Exponential Smoothing)
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
-from random import random
+
 ```
-
-
-```python
-train=80
-predict=200
-data = y[:train].values
-#exo = z[:train].values
-```
-
-
-```python
-model = ExponentialSmoothing(data)
-model_fit = model.fit()
-# make prediction
-yhat = model_fit.predict(0, train+predict-1)
-```
-
-
-```python
-_, ax = plt.subplots(figsize=(24,16))
-ax.plot(fechas, yhat, label='Prediccion')
-ax.plot(fechas[:train], data, marker='o', label='Datos Entrenamiento')
-ax.plot(fechas, y[:train+predict].values, label='Datos Reales')
-ax.legend()
-```
-
-
-
-
-    <matplotlib.legend.Legend at 0x1441c99a5c8>
-
-
-
-
-![png](output_59_1.png)
-
 
 ---
 
@@ -1084,7 +1712,7 @@ plt.show()
 ```
 
 
-![png](output_63_0.png)
+![png](output_72_0.png)
 
 
 Se puede apreciar que el modelo encuentra que un buen alfa es uno cercano a uno, ya que la muestra siguiente depende casi exclusivamente de una o dos muestras anteriores, asi que es el optimo.
